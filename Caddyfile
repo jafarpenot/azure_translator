@@ -1,0 +1,15 @@
+# SITE_ADDRESS, BASIC_AUTH_USER, BASIC_AUTH_HASH come from .env (see .env.example).
+#
+# SITE_ADDRESS examples:
+#   yourlabel.eastus.cloudapp.azure.com   -> automatic trusted Let's Encrypt cert
+#   https://20.0.0.0                       -> bare IP: also add `tls internal` below
+#                                             (self-signed; browsers show a warning)
+
+{$SITE_ADDRESS} {
+	# Caddy >= 2.8 uses `basic_auth`. On older Caddy, rename to `basicauth`.
+	basic_auth {
+		{$BASIC_AUTH_USER} {$BASIC_AUTH_HASH}
+	}
+
+	reverse_proxy translator:8501
+}

@@ -1,0 +1,27 @@
+services:
+  translator:
+    build: .
+    env_file: .env
+    # No host port mapping: only reachable on the internal docker network,
+    # never directly from the internet. Caddy proxies to it.
+    expose:
+      - "8501"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - translator
+    ports:
+      - "80:80"     # needed for Let's Encrypt HTTP challenge + HTTP->HTTPS redirect
+      - "443:443"
+    env_file: .env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # persists issued TLS certs across restarts
+      - caddy_config:/config
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
