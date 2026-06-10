@@ -1,0 +1,15 @@
+services:
+  translator:
+    build: .
+    ports:
+      - "8501:8501"
+    env_file: .env
+    # Dev live-reload: mount source over the image and let Streamlit re-run on save.
+    # Comment out the volumes/environment blocks below for a "prod-like" run.
+    volumes:
+      - ./app.py:/app/app.py
+      - ./translator.py:/app/translator.py
+      - ./languages.py:/app/languages.py
+      - ./assets:/app/assets
+    environment:
+      - STREAMLIT_SERVER_RUN_ON_SAVE=true
